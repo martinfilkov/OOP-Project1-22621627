@@ -11,13 +11,16 @@ public abstract class CommandFactory {
     static {
         commandMap.put("open", args -> new OpenCommand());
         commandMap.put("exit", args -> new ExitCommand());
+        commandMap.put("help", args -> new HelpCommand());
+        commandMap.put("save", args -> new SaveCommand());
+        commandMap.put("saveas", args -> new SaveAsCommand());
+        commandMap.put("close", args -> new CloseCommand());
     }
 
     public static void executeCommand(String input) throws IOException {
         List<String> commandParts = List.of(input.split("\\s"));
         String commandName = commandParts.get(0);
         List<String> args = commandParts.size() > 1 ? new ArrayList<>(commandParts.subList(1, commandParts.size())) : new ArrayList<>();
-
 
         Function<List<String> ,Command> commandFunction = commandMap.get(commandName);
 
