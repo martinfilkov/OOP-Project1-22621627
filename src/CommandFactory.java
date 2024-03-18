@@ -3,18 +3,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public abstract class CommandFactory {
-    private static final Map<String, Function<List<String>, Command>> commandMap = new HashMap<>();
+    private static final Map<String, Command> commandMap = new HashMap<>();
 
     static {
-        commandMap.put("open", args -> new OpenCommand());
-        commandMap.put("exit", args -> new ExitCommand());
-        commandMap.put("help", args -> new HelpCommand());
-        commandMap.put("save", args -> new SaveCommand());
-        commandMap.put("saveas", args -> new SaveAsCommand());
-        commandMap.put("close", args -> new CloseCommand());
+        commandMap.put("open", new OpenCommand());
+        commandMap.put("exit", new ExitCommand());
+        commandMap.put("help", new HelpCommand());
+        commandMap.put("save", new SaveCommand());
+        commandMap.put("saveas", new SaveAsCommand());
+        commandMap.put("close", new CloseCommand());
+        commandMap.put("print", new PrintCommand());
+        commandMap.put("delete", new DeleteCommand());
     }
 
     public static void executeCommand(String input) throws IOException {
@@ -22,10 +23,9 @@ public abstract class CommandFactory {
         String commandName = commandParts.get(0);
         List<String> args = commandParts.size() > 1 ? new ArrayList<>(commandParts.subList(1, commandParts.size())) : new ArrayList<>();
 
-        Function<List<String> ,Command> commandFunction = commandMap.get(commandName);
+        Command command = commandMap.get(commandName);
 
-        if (commandFunction != null) {
-            Command command = commandFunction.apply(args);
+        if (command != null) {
             command.execute(args);
         }
         else {

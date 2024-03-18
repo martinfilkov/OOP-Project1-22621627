@@ -26,8 +26,10 @@ public class SaveAsCommand implements Command{
                 Files.createDirectories(newPath.getParent());
             }
 
-            //TO-DO
-            //check if json
+            if (!newPath.toString().endsWith(".json")) {
+                System.out.println("Error: Only JSON files are supported. You must include the filename in the path!");
+                return;
+            }
 
             Files.write(newPath, content.getBytes());
             FileManager.getInstance().setPath(newPath);
