@@ -1,5 +1,7 @@
 import java.nio.file.Path;
 
+// Uses the singleton architecture to create a class with a single instance
+// The instance stored information about the file such as its path and content
 public class FileManager {
     private static FileManager instance;
     private Path path;

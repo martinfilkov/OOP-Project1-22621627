@@ -1,5 +1,6 @@
 import java.util.List;
 
+// Prints a help menu to the user
 public class HelpCommand implements Command{
     @Override
     public void execute(List<String> args){
