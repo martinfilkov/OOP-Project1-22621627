@@ -21,6 +21,7 @@ public abstract class CommandFactory {
         commandMap.put("validate", new ValidationCommand());
         commandMap.put("print", new PrintCommand());
         commandMap.put("delete", new DeleteCommand());
+        commandMap.put("search", new SearchCommand());
     }
 
     // Tries to match the inputted by the user command with one in the HashMap
