@@ -10,6 +10,7 @@ public class CloseCommand implements Command{
         }
         FileManager.getInstance().setContent("");
         FileManager.getInstance().setPath(null);
+        FileManager.getInstance().setValid(false);
         System.out.println("Successfully closed file");
     }
 }

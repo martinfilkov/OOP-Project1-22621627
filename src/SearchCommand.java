@@ -9,6 +9,15 @@ public class SearchCommand implements Command {
             return;
         }
 
+        if(FileManager.getInstance().getPath() == null){
+            System.out.println("Error: No file opened");
+        }
+
+        if(!FileManager.getInstance().isValid()){
+            System.out.println("Error: File must be validated to perform a search");
+            return;
+        }
+
         //Extract the content of the file
         //Assign the searched key with brackets around it (keys are in brackets in json)
         String content = FileManager.getInstance().getContent();

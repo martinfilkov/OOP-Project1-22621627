@@ -8,7 +8,7 @@ public class ValidationCommand implements Command{
 
         // Checks if content is empty
         if (json == null || json.isEmpty()){
-            System.out.println("Error: No content present");
+            System.out.println("Error: No file loaded or file is empty.");
             return;
         }
 
@@ -89,6 +89,7 @@ public class ValidationCommand implements Command{
             System.out.println("Error: Missing ':' after a key in an object.");
         } else {
             System.out.println("Basic JSON structure appears valid.");
+            FileManager.getInstance().setValid(true);
         }
     }
 }

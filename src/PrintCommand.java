@@ -6,6 +6,15 @@ public class PrintCommand implements Command{
         // The StringBuilder is used to store the formatted string that will be shown to the user
         StringBuilder formatted = new StringBuilder();
 
+        if(FileManager.getInstance().getPath() == null){
+            System.out.println("Error: No file opened");
+        }
+
+        if(!FileManager.getInstance().isValid()){
+            System.out.println("Error: File must be validated to perform a print");
+            return;
+        }
+
         // Depth level is used to calculate the tabs used for formatting
         int depthLevel = 0;
 
