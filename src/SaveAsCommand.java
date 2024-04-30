@@ -27,13 +27,13 @@ public class SaveAsCommand implements Command{
         // Checks if the file path is of json format
         // Saves the content of the file at the given path
         try {
-            if (newPath.getParent() != null) {
-                Files.createDirectories(newPath.getParent());
-            }
-
             if (!newPath.toString().endsWith(".json")) {
                 System.out.println("Error: Only JSON files are supported. You must include the filename in the path!");
                 return;
+            }
+
+            if (newPath.getParent() != null) {
+                Files.createDirectories(newPath.getParent());
             }
 
             Files.write(newPath, content.getBytes());

@@ -29,8 +29,12 @@ public class ValidationCommand implements Command{
         // inObject is used to validate if we are inside a json object or not
         boolean inObject = false;
 
+        int line = 1;
+
         for (int i = 0; i < charJSON.length; i++){
             char ch =  charJSON[i];
+
+            if(ch == '\n') line++;
 
             switch (ch) {
                 case '{' -> {
@@ -43,18 +47,18 @@ public class ValidationCommand implements Command{
                     }
                 }
                 case '}' -> {
-                    // Checks if the opened brackets are more than one
-                    if (openBrackets <= 0) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, i);
-                        return;
-                    }
-
                     // Checks if the character is inside a string
                     if(!isQuoted){
                         // Similarly to the open brackets but decreases the openBrackets count
                         openBrackets--;
                         inObject = true;
                         expectColon = false;
+                    }
+
+                    // Checks if the opened brackets are more than one
+                    if (openBrackets <= 0) {
+                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
+                        return;
                     }
                 }
                 case '"' ->  isQuoted = !isQuoted;
@@ -63,7 +67,7 @@ public class ValidationCommand implements Command{
                     // If expected it reverses expectColon back to false
                     if(expectColon && !isQuoted) expectColon = false;
                     else if(inObject && !isQuoted) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, i);
+                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
                         return;
                     }
                 }
