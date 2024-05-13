@@ -1,0 +1,8 @@
+{
+  "name":"Martin Filkov",
+  "age":20,
+  "nationality": "bulgarian",
+  "languages": [ "Bulgarian", "English" ],
+  "information":{"hasDegree":false, "friends": ["Nikolay", "Boyan", "Evgeny", "Ivaylo"]},
+  "hasDriversLicence":false
+}

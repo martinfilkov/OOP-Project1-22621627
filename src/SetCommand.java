@@ -1,10 +1,8 @@
-import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 public class SetCommand implements Command {
     @Override
-    public void execute(List<String> args) throws IOException {
+    public void execute(List<String> args){
         FileManager fileManager = FileManager.getInstance();
 
         //Checking if a file is opened
@@ -30,7 +28,7 @@ public class SetCommand implements Command {
         String value = String.join(" ", args.subList(1, args.size()));
 
         // Check type of the value
-        String newValue = parseValue(value);
+        String newValue = FileManager.parseValue(value);
 
         String content = fileManager.getContent();
 
@@ -58,38 +56,6 @@ public class SetCommand implements Command {
         String updatedContent = content.substring(0, valueStart) + newValue + content.substring(valueEnd);
         fileManager.setContent(updatedContent);
         System.out.println("Key " + key + " updated successfully.");
-    }
-
-    // Helper method to parse and format the new value correctly based on its type
-    private String parseValue(String input) {
-        input = input.trim();
-
-        //I am using scanner because I couldn't find a parse function without throwing an exception
-        Scanner in = new Scanner(input);
-
-        if (in.hasNextBoolean()) {
-            return String.valueOf(in.nextBoolean());
-        } else if (in.hasNextInt()) {
-            return String.valueOf(in.nextInt());
-        } else if (in.hasNextDouble()) {
-            return String.valueOf(in.nextDouble());
-        } else if (input.matches("\\[.*]") || input.matches("\\{.*}")) {
-            return input;
-        } else if (input.startsWith("\"") && input.endsWith("\"") && countMatches(input, '"') == 2) {
-            return input;
-        }
-        in.close();
-        return null;
-    }
-
-    private int countMatches(String text, char character) {
-        int count = 0;
-        for (char c : text.toCharArray()) {
-            if (c == character) {
-                count++;
-            }
-        }
-        return count;
     }
 
     private int findValueEnd(String content, int start) {

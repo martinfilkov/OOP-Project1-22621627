@@ -47,18 +47,17 @@ public class ValidationCommand implements Command{
                     }
                 }
                 case '}' -> {
+                    // Checks if the opened brackets are more than one
+                    if (openBrackets <= 0) {
+                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
+                        return;
+                    }
                     // Checks if the character is inside a string
                     if(!isQuoted){
                         // Similarly to the open brackets but decreases the openBrackets count
                         openBrackets--;
                         inObject = true;
                         expectColon = false;
-                    }
-
-                    // Checks if the opened brackets are more than one
-                    if (openBrackets <= 0) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
-                        return;
                     }
                 }
                 case '"' ->  isQuoted = !isQuoted;
