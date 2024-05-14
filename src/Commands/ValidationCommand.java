@@ -34,7 +34,6 @@ public class ValidationCommand implements Command {
         boolean isQuoted = false;
         boolean expectColon = false;
         boolean inObject = false;
-
         int line = 1;
 
         for (int i = 0; i < charJSON.length; i++){
@@ -51,14 +50,14 @@ public class ValidationCommand implements Command {
                     }
                 }
                 case '}' -> {
-                    if (openBrackets <= 0) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
-                        return;
-                    }
                     if(!isQuoted){
                         openBrackets--;
                         inObject = true;
                         expectColon = false;
+                    }
+                    if (openBrackets <= 0 && i != charJSON.length - 1) {
+                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
+                        return;
                     }
                 }
                 case '"' ->  isQuoted = !isQuoted;

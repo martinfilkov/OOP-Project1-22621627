@@ -40,6 +40,7 @@ public class OpenCommand  implements Command {
         if(Files.exists(path)){
             FileManager.getInstance().setPath(path);
             FileManager.getInstance().setContent(new String(Files.readAllBytes(path)));
+            FileManager.getInstance().setValid(false);
             System.out.printf("Successfully opened %s\n", filepath);
         }
         else {
@@ -50,6 +51,7 @@ public class OpenCommand  implements Command {
                 Files.write(path, "{}".getBytes());
                 FileManager.getInstance().setPath(path);
                 FileManager.getInstance().setContent("{}");
+                FileManager.getInstance().setValid(true);
                 System.out.printf("File not found. A new JSON file has been created at %s\n", filepath);
             } catch (IOException e) {
                 System.out.println("Error creating the file: " + e.getMessage());
