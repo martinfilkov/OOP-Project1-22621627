@@ -1,10 +1,15 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.util.List;
 
 /**
  * This class represents a command to close the currently opened file.
  * It empties all information stored in memory when the file is closed.
  */
-public class CloseCommand implements Command{
+public class CloseCommand implements Command {
     /**
      * Executes the close command. If no file is currently opened, an error message is displayed.
      * Otherwise, it closes the file and clears any stored information.

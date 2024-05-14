@@ -1,3 +1,5 @@
+package MainFunctionality;
+
 import java.util.Scanner;
 
 /**

@@ -1,3 +1,5 @@
+package Manager;
+
 import java.nio.file.Path;
 import java.util.Scanner;
 

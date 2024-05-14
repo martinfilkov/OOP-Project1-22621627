@@ -1,3 +1,7 @@
+package Commands;
+
+import Interfaces.Command;
+
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
@@ -9,7 +13,7 @@ import java.util.List;
  * This class implements the move command which is responsible for moving a file from one location to another.
  * It ensures that both the source and destination file paths are specified in JSON format.
  */
-public class MoveCommand implements Command{
+public class MoveCommand implements Command {
     /**
      * Executes the move command. This method moves a file from a specified source path to a destination path.
      * Both file paths must be in JSON format and existing. Errors are thrown if any conditions are not met.

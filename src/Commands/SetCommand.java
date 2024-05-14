@@ -1,3 +1,8 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.util.List;
 
 /**

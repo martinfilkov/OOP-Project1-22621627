@@ -1,3 +1,8 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +13,7 @@ import java.util.List;
  * This class represents a command to open a specified file.
  * It supports handling of JSON files, ensuring that only these files are opened.
  */
-public class OpenCommand  implements Command{
+public class OpenCommand  implements Command {
     /**
      * Executes the open command using the provided arguments to locate and open a file.
      * It checks if the file path is provided and validates if the file is a JSON format.
@@ -39,7 +44,9 @@ public class OpenCommand  implements Command{
         }
         else {
             try {
-                Files.createDirectories(path.getParent());
+                if (path.getParent() != null) {
+                    Files.createDirectories(path.getParent());
+                }
                 Files.write(path, "{}".getBytes());
                 FileManager.getInstance().setPath(path);
                 FileManager.getInstance().setContent("{}");

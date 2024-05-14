@@ -1,3 +1,8 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -5,7 +10,7 @@ import java.util.List;
  * This class implements the validation command which checks the structural integrity of the content of the currently opened file.
  * It ensures that the JSON content has matching brackets and proper string encapsulation before considering it valid.
  */
-public class ValidationCommand implements Command{
+public class ValidationCommand implements Command {
     /**
      * Executes the validation command. This method checks for the structural validity of the JSON content in the currently opened file.
      * It counts the opening and closing brackets and checks for proper placement of quotes and colons to ensure JSON validity.

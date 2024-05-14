@@ -1,3 +1,8 @@
+package MainFunctionality;
+
+import Commands.*;
+import Interfaces.Command;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

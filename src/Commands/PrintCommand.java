@@ -1,10 +1,15 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.util.List;
 
 /**
  * This class implements the print command which outputs the content of the currently opened file.
  * It ensures that the file is opened and validated before proceeding with the print operation.
  */
-public class PrintCommand implements Command{
+public class PrintCommand implements Command {
     /**
      * Executes the print command. This method prints the content of the currently opened and validated file.
      * It formats the content for readability, managing depth levels for nested structures and handling quotes.
@@ -17,6 +22,7 @@ public class PrintCommand implements Command{
 
         if(FileManager.getInstance().getPath() == null){
             System.out.println("Error: No file opened");
+            return;
         }
 
         if(!FileManager.getInstance().isValid()){

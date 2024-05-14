@@ -1,3 +1,8 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.util.List;
 
 /**
@@ -20,6 +25,7 @@ public class SearchCommand implements Command {
 
         if(FileManager.getInstance().getPath() == null){
             System.out.println("Error: No file opened");
+            return;
         }
 
         if(!FileManager.getInstance().isValid()){

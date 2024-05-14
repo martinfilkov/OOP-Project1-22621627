@@ -1,10 +1,15 @@
+package Commands;
+
+import Interfaces.Command;
+import Manager.FileManager;
+
 import java.util.List;
 
 /**
  * This class implements the create command which is responsible for adding a new key-value pair to an open JSON file.
  * The command expects the file to be opened and validated before adding new data.
  */
-public class CreateCommand implements Command{
+public class CreateCommand implements Command {
     /**
      * Executes the create command. It adds a new key-value pair to the currently open file.
      * Requires the file to be both open and validated to proceed with the creation.
@@ -37,8 +42,6 @@ public class CreateCommand implements Command{
         String content = fileManager.getContent();
         String newKey = "\"" + args.get(0) + "\"";
         String value = FileManager.parseValue(String.join(" ", args.subList(1, args.size())));
-
-        System.out.println(String.join(" ", args.subList(1, args.size())));
 
         if (value == null) {
             System.out.println("Error: Invalid input format for value. Ensure proper quoting for strings or correct JSON formatting.");

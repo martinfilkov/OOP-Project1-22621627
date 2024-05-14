@@ -1,3 +1,7 @@
+package Commands;
+
+import Interfaces.Command;
+
 import java.util.List;
 
 /**
