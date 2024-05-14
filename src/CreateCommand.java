@@ -1,6 +1,18 @@
 import java.util.List;
 
+/**
+ * This class implements the create command which is responsible for adding a new key-value pair to an open JSON file.
+ * The command expects the file to be opened and validated before adding new data.
+ */
 public class CreateCommand implements Command{
+    /**
+     * Executes the create command. It adds a new key-value pair to the currently open file.
+     * Requires the file to be both open and validated to proceed with the creation.
+     *
+     * @param args the arguments provided to the command, expects at least two arguments where
+     *             the first argument is the key and the remaining argument(s) form the value.
+     */
+
     @Override
     public void execute(List<String> args){
         FileManager fileManager = FileManager.getInstance();

@@ -4,13 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This abstract class serves as a factory for creating command objects based on command names.
+ * It maintains a mapping of command names to their corresponding Command objects.
+ */
 public abstract class CommandFactory {
 
-    // Used for storing all the commands that are present in the application.
+    /**
+     * A map storing all the command names along with their respective command object instances.
+     */
     private static final Map<String, Command> commandMap = new HashMap<>();
 
-    // At the start of the application all available commands are inputted in the HashMap as keys
-    // Their implementation class is linked as value to that key
     static {
         commandMap.put("open", new OpenCommand());
         commandMap.put("exit", new ExitCommand());
@@ -27,20 +31,22 @@ public abstract class CommandFactory {
         commandMap.put("create", new CreateCommand());
     }
 
-    // Tries to match the inputted by the user command with one in the HashMap
+    /**
+     * Executes a command based on a given string input. This method parses the input to identify
+     * the command and any associated arguments. It then attempts to execute the command if it is found
+     * in the command map.
+     *
+     * @param input the complete command line input provided by the user.
+     * @throws IOException if an I/O error occurs during command execution.
+     */
     public static void executeCommand(String input) throws IOException {
-        // The regex "\\s" clears all whitespaces inside the string so that no blank arguments are passed to the execute command
         List<String> commandParts = List.of(input.split("\\s"));
         String commandName = commandParts.get(0);
 
-        // Create a list of arguments that include all the information except the first inputted word
-        // If no words follow the command name a blank arguments List is created
         List<String> args = commandParts.size() > 1 ? new ArrayList<>(commandParts.subList(1, commandParts.size())) : new ArrayList<>();
 
-        // Tries to match a command with one in the HashMap
         Command command = commandMap.get(commandName);
 
-        // If successful, the command is executed
         if (command != null) {
             command.execute(args);
         }

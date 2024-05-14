@@ -1,15 +1,27 @@
 import java.nio.file.Path;
 import java.util.Scanner;
 
-// Uses the singleton architecture to create a class with a single instance
-// The instance stores information about the file such as its path and content
+/**
+ * Singleton class for managing file information such as its path and content.
+ * Ensures that only one instance of the FileManager exists throughout the application.
+ */
 public class FileManager {
     private static FileManager instance;
     private Path path;
     private String content;
     private boolean isValid = false;
+
+    /**
+     * Private constructor to prevent instantiation from outside the class.
+     */
     private FileManager(){}
 
+    /**
+     * Provides the singleton instance of FileManager.
+     * If no instance exists, it initializes a new instance.
+     *
+     * @return the singleton instance of FileManager.
+     */
     public static FileManager getInstance(){
         if (instance == null){
             instance = new FileManager();
@@ -17,35 +29,69 @@ public class FileManager {
         return instance;
     }
 
+    /**
+     * Gets the current file path.
+     *
+     * @return the path of the file.
+     */
     public Path getPath() {
         return path;
     }
 
+    /**
+     * Sets the file path.
+     *
+     * @param path the new path of the file.
+     */
     public void setPath(Path path) {
         this.path = path;
     }
 
+    /**
+     * Gets the content of the file.
+     *
+     * @return the content of the file as a string.
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the content of the file.
+     *
+     * @param content the new content to set in the file.
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Checks if the file is valid.
+     *
+     * @return true if the file is considered valid, false otherwise.
+     */
     public boolean isValid() {
         return isValid;
     }
 
+    /**
+     * Sets the validation state of the file.
+     *
+     * @param valid the new validation state of the file.
+     */
     public void setValid(boolean valid) {
         isValid = valid;
     }
 
-    // Helper method to parse and format the new value correctly based on its type
+    /**
+     * Parses the input string to format it correctly based on its type.
+     * Supports boolean, integer, double, JSON objects, JSON arrays, and quoted strings.
+     *
+     * @param input the string to parse.
+     * @return the formatted string if recognizable; otherwise, null.
+     */
     public static String parseValue(String input) {
         input = input.trim();
-
-        //I am using scanner because I couldn't find a parse function without throwing an exception
         Scanner in = new Scanner(input);
 
         if (in.hasNextBoolean()) {

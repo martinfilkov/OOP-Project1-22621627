@@ -5,16 +5,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class SaveAsCommand implements Command{
+/**
+ * This class implements the save as command which allows the user to save the current file's content to a new file.
+ * It checks that the file is opened, a new path is provided, and that the path is for a JSON file before saving.
+ */
+public class SaveAsCommand implements Command {
+    /**
+     * Executes the save as command. This method saves the currently opened file's content to a new specified path.
+     * It ensures the path is valid, points to a JSON file, and that a file is currently opened and valid.
+     *
+     * @param args the arguments provided to the command; expects the new file path as the first argument.
+     * @throws IOException if an I/O error occurs during file saving.
+     */
     @Override
-    public void execute(List<String> args){
-        // Checks if a file is opened
-        if(FileManager.getInstance().getPath() == null){
+    public void execute(List<String> args) throws IOException {
+        if (FileManager.getInstance().getPath() == null) {
             System.out.println("Error: No file opened to save");
             return;
         }
 
-        // Checks if a path is provided
         if (args.isEmpty()) {
             System.out.println("Error: No path provided");
             return;
@@ -23,16 +32,13 @@ public class SaveAsCommand implements Command{
         Path newPath = Paths.get(args.get(0)).toAbsolutePath();
         String content = FileManager.getInstance().getContent();
 
-        // If the directory provided does not exist, one is created
-        // Checks if the file path is of json format
-        // Saves the content of the file at the given path
         try {
             if (!newPath.toString().endsWith(".json")) {
-                System.out.println("Error: Only JSON files are supported. You must include the filename in the path!");
+                System.out.println("Error: File path must be of JSON format");
                 return;
             }
 
-            if (newPath.getParent() != null) {
+            if (!Files.exists(newPath.getParent())) {
                 Files.createDirectories(newPath.getParent());
             }
 
@@ -40,9 +46,6 @@ public class SaveAsCommand implements Command{
             FileManager.getInstance().setPath(newPath);
             System.out.printf("Successfully saved to %s\n", newPath);
         } catch (AccessDeniedException e) {
-            // THE PROVIDED PATH MUST INCLUDE THE NAME OF THE JSON FILE WE WANT TO SAVE;
-            System.out.println("Error: Access denied. Cannot save the file to the specified location.");
-        } catch (IOException e) {
             System.out.printf("Error: An error occurred while saving the file: %s\n", e.getMessage());
         }
     }

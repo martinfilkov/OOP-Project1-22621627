@@ -1,9 +1,18 @@
 import java.util.List;
 
+/**
+ * This class implements the print command which outputs the content of the currently opened file.
+ * It ensures that the file is opened and validated before proceeding with the print operation.
+ */
 public class PrintCommand implements Command{
+    /**
+     * Executes the print command. This method prints the content of the currently opened and validated file.
+     * It formats the content for readability, managing depth levels for nested structures and handling quotes.
+     *
+     * @param args the arguments provided to the command; not used in this command.
+     */
     @Override
     public void execute(List<String> args){
-        // The StringBuilder is used to store the formatted string that will be shown to the user
         StringBuilder formatted = new StringBuilder();
 
         if(FileManager.getInstance().getPath() == null){
@@ -15,10 +24,8 @@ public class PrintCommand implements Command{
             return;
         }
 
-        // Depth level is used to calculate the tabs used for formatting
         int depthLevel = 0;
 
-        // InQuote is used to ignore special characters inside of strings
         boolean inQuote = false;
 
         String content = FileManager.getInstance().getContent();
@@ -26,14 +33,10 @@ public class PrintCommand implements Command{
         for (char c : content.toCharArray()) {
             switch (c) {
                 case '\"' -> {
-                    // Either provides a start of quotes (true) or end of ones (false)
                     inQuote = !inQuote;
                     formatted.append(c);
                 }
                 case '{', '[' -> {
-                    // Checks if  the character is inside a string
-                    // If not it increases the depth level
-                    // Otherwise just append the character inside the StringBuilder
                     if (!inQuote) {
                         depthLevel++;
                         formatted.append(c).append("\n").append(getDepth(depthLevel));
@@ -42,7 +45,6 @@ public class PrintCommand implements Command{
                     }
                 }
                 case '}', ']' -> {
-                    // Same checks as the open brackets but decreases the depth level
                     if (!inQuote) {
                         depthLevel--;
                         formatted.append("\n").append(getDepth(depthLevel)).append(c);
@@ -51,7 +53,6 @@ public class PrintCommand implements Command{
                     }
                 }
                 case ',' -> {
-                    // Formats on a new line after a comma
                     if (!inQuote) {
                         formatted.append(c).append("\n").append(getDepth(depthLevel));
                     } else {
@@ -59,7 +60,6 @@ public class PrintCommand implements Command{
                     }
                 }
                 case ':' -> {
-                    // Separates key from value for better readability
                     if (!inQuote) {
                         formatted.append(c).append(" ");
                     } else {
@@ -77,7 +77,6 @@ public class PrintCommand implements Command{
         System.out.println(formatted);
     }
 
-    // Used for adding tabs according to the depth level
     private static String getDepth(int level) {
         return "    ".repeat(Math.max(0, level));
     }
