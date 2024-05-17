@@ -30,6 +30,7 @@ public class ValidationCommand implements Command {
         json = json.trim();
 
         char[] charJSON = json.toCharArray();
+        int openBraces = 0;
         int openBrackets = 0;
         boolean isQuoted = false;
         boolean expectColon = false;
@@ -37,34 +38,50 @@ public class ValidationCommand implements Command {
         int line = 1;
 
         for (int i = 0; i < charJSON.length; i++){
-            char ch =  charJSON[i];
+            char ch = charJSON[i];
 
-            if(ch == '\n') line++;
+            if (ch == '\n') line++;
 
             switch (ch) {
                 case '{' -> {
-                    if(!isQuoted){
-                        openBrackets++;
+                    if (!isQuoted) {
+                        openBraces++;
                         inObject = true;
                         expectColon = false;
                     }
                 }
                 case '}' -> {
-                    if(!isQuoted){
-                        openBrackets--;
+                    if (!isQuoted) {
+                        openBraces--;
                         inObject = true;
                         expectColon = false;
                     }
-                    if (openBrackets <= 0 && i != charJSON.length - 1) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
+                    if (openBraces <= 0 && i != charJSON.length - 1) {
+                        System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
                         return;
                     }
                 }
-                case '"' ->  isQuoted = !isQuoted;
+                case '[' -> {
+                    if (!isQuoted) {
+                        openBrackets++;
+                        expectColon = false;
+                    }
+                }
+                case ']' -> {
+                    if (!isQuoted) {
+                        openBrackets--;
+                        expectColon = false;
+                    }
+                    if (openBrackets < 0 ) {
+                        System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
+                        return;
+                    }
+                }
+                case '"' -> isQuoted = !isQuoted;
                 case ':' -> {
                     if(expectColon && !isQuoted) expectColon = false;
                     else if(inObject && !isQuoted) {
-                        System.out.printf("Error: Unexpected '%s' at position: %d\n", ch, line);
+                        System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
                         return;
                     }
                 }
@@ -80,8 +97,10 @@ public class ValidationCommand implements Command {
 
         if (isQuoted) {
             System.out.println("Error: Unclosed quote.");
+        } else if (openBraces != 0) {
+            System.out.println("Error: Mismatched curly braces.");
         } else if (openBrackets != 0) {
-            System.out.println("Error: Mismatched brackets or braces.");
+            System.out.println("Error: Mismatched square brackets.");
         } else if (expectColon) {
             System.out.println("Error: Missing ':' after a key in an object.");
         } else {
