@@ -1,49 +1,96 @@
 package Commands;
 
 import Interfaces.Command;
+import Manager.FileManager;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * This class implements the delete command which is responsible for deleting a specified JSON file.
- * It checks that the provided file path points to a JSON file before attempting deletion.
+ * This class implements the delete element command which allows the user to delete a specific key within the content of the currently opened file.
+ * It checks that the file is opened, validated, and that a key is provided before performing the deletion.
  */
 public class DeleteCommand implements Command {
     /**
-     * Executes the delete command. This method deletes the specified file if it is a JSON file.
-     * An error is thrown if the file is not found, not a JSON file, or if there are access restrictions.
+     * Executes the delete element command. This method deletes a specific key in the currently opened and validated file's content.
+     * It requires that a key is provided and that the file is opened and validated.
      *
-     * @param args the arguments provided to the command; expects the file path as the first argument.
-     * @throws IOException if an IO error occurs during file deletion.
+     * @param args the arguments provided to the command; expects the key to delete as the first argument.
      */
     @Override
-    public void execute(List<String> args) throws IOException {
+    public void execute(List<String> args) {
         if (args.isEmpty()) {
-            System.out.println("Error: No path provided");
+            System.out.println("Error: No key provided");
             return;
         }
 
-        Path deletePath = Paths.get(args.get(0)).toAbsolutePath();
+        FileManager fileManager = FileManager.getInstance();
 
-        try {
-            if (Files.exists(deletePath)) {
-                if (!deletePath.toString().endsWith(".json")) {
-                    System.out.println("Error: Only JSON files are supported. You must include the filename in the path!");
-                    return;
-                }
+        if(fileManager.getPath() == null){
+            System.out.println("Error: No file opened");
+            return;
+        }
 
-                Files.delete(deletePath);
-                System.out.printf("Deleted file: %s", deletePath);
-            } else {
-                System.out.println("Error: File does not exist");
+        if(!fileManager.isValid()){
+            System.out.println("Error: File must be validated to perform a deletion");
+            return;
+        }
+
+        String content = fileManager.getContent();
+        String keyToDelete = "\"" + args.get(0) + "\"";
+
+        if (content == null || content.isEmpty()) {
+            System.out.println("Error: No file loaded or file is empty");
+            return;
+        }
+
+        int keyIndex = content.indexOf(keyToDelete);
+        if (keyIndex == -1) {
+            System.out.println("Error: Key not found");
+            return;
+        }
+
+        int valueStart = content.indexOf(":", keyIndex) + 1;
+        int valueEnd;
+        while (Character.isWhitespace(content.charAt(valueStart))) {
+            valueStart++;
+        }
+
+        if (content.charAt(valueStart) == '[') {
+            valueEnd = content.indexOf("]", valueStart) + 1;
+        }
+        else if(content.charAt(valueStart) == '{') {
+            valueEnd = content.indexOf("}", valueStart) + 1;
+        }
+        else {
+            valueEnd = content.indexOf(",", valueStart);
+            if (valueEnd == -1) {
+                valueEnd = content.indexOf("}", valueStart);
             }
-        } catch (AccessDeniedException e) {
-            System.out.printf("Error: An error occurred while deleting the file: %s\n", e.getMessage());
+        }
+
+        String keyValuePair;
+        if (valueEnd == -1) {
+            keyValuePair = content.substring(keyIndex);
+        } else {
+            keyValuePair = content.substring(keyIndex, valueEnd + 1);
+        }
+
+        if (keyIndex > 0 && content.charAt(keyIndex - 1) == ',') {
+            keyValuePair = "," + keyValuePair;
+        } else if (valueEnd != -1 && content.charAt(valueEnd + 1) == ',') {
+            keyValuePair = keyValuePair + ",";
+        }
+
+        String updatedContent = content.replace(keyValuePair, "").trim();
+
+        fileManager.setContent(updatedContent);
+        try {
+            Files.writeString(fileManager.getPath(), updatedContent);
+            System.out.printf("Deleted key '%s' from the JSON file.\n", args.get(0));
+        } catch (IOException e) {
+            System.out.println("Error: Failed to save updated content to the file.");
         }
     }
 }
