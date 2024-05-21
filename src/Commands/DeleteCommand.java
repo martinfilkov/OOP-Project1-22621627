@@ -1,5 +1,4 @@
 package Commands;
-
 import Interfaces.Command;
 import Manager.FileManager;
 
@@ -27,12 +26,12 @@ public class DeleteCommand implements Command {
 
         FileManager fileManager = FileManager.getInstance();
 
-        if(fileManager.getPath() == null){
+        if(fileManager.getPath() == null) {
             System.out.println("Error: No file opened");
             return;
         }
 
-        if(!fileManager.isValid()){
+        if(!fileManager.isValid()) {
             System.out.println("Error: File must be validated to perform a deletion");
             return;
         }
@@ -52,45 +51,43 @@ public class DeleteCommand implements Command {
         }
 
         int valueStart = content.indexOf(":", keyIndex) + 1;
-        int valueEnd;
         while (Character.isWhitespace(content.charAt(valueStart))) {
             valueStart++;
         }
 
+        int valueEnd;
         if (content.charAt(valueStart) == '[') {
             valueEnd = content.indexOf("]", valueStart) + 1;
-        }
-        else if(content.charAt(valueStart) == '{') {
+        } else if (content.charAt(valueStart) == '{') {
             valueEnd = content.indexOf("}", valueStart) + 1;
-        }
-        else {
+        } else {
             valueEnd = content.indexOf(",", valueStart);
             if (valueEnd == -1) {
                 valueEnd = content.indexOf("}", valueStart);
             }
         }
 
-        String keyValuePair;
         if (valueEnd == -1) {
-            keyValuePair = content.substring(keyIndex);
-        } else {
-            keyValuePair = content.substring(keyIndex, valueEnd + 1);
+            valueEnd = content.length();
         }
+
+        String keyValuePair = content.substring(keyIndex, valueEnd).trim();
 
         if (keyIndex > 0 && content.charAt(keyIndex - 1) == ',') {
             keyValuePair = "," + keyValuePair;
-        } else if (valueEnd != -1 && content.charAt(valueEnd + 1) == ',') {
+        } else if (valueEnd < content.length() && content.charAt(valueEnd) == ',') {
             keyValuePair = keyValuePair + ",";
         }
 
         String updatedContent = content.replace(keyValuePair, "").trim();
 
-        fileManager.setContent(updatedContent);
-        try {
-            Files.writeString(fileManager.getPath(), updatedContent);
-            System.out.printf("Deleted key '%s' from the JSON file.\n", args.get(0));
-        } catch (IOException e) {
-            System.out.println("Error: Failed to save updated content to the file.");
+        if (updatedContent.endsWith(",")) {
+            updatedContent = updatedContent.substring(0, updatedContent.length() - 1).trim();
         }
+
+        updatedContent = updatedContent.replaceAll(",\\s*}", "}");
+
+        fileManager.setContent(updatedContent);
+        System.out.printf("Deleted key '%s' from the JSON file.\n", args.get(0));
     }
 }
