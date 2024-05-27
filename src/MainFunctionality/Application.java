@@ -16,7 +16,6 @@ public class Application {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // Basic infinite loop mimicking a cmd
         while (true){
             System.out.print("> ");
             String input = sc.nextLine();

@@ -50,8 +50,7 @@ public abstract class CommandFactory {
 
         List<String> args = commandParts.size() > 1 ? new ArrayList<>(commandParts.subList(1, commandParts.size())) : new ArrayList<>();
 
-        Command command = commandMap.get(commandName);
-
+        Command command = commandMap.get(commandName.toLowerCase());
         if (command != null) {
             command.execute(args);
         }

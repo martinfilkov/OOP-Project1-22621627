@@ -34,7 +34,6 @@ public class ValidationCommand implements Command {
         int openBrackets = 0;
         boolean isQuoted = false;
         boolean expectColon = false;
-        boolean inObject = false;
         int line = 1;
 
         for (int i = 0; i < charJSON.length; i++){
@@ -46,17 +45,15 @@ public class ValidationCommand implements Command {
                 case '{' -> {
                     if (!isQuoted) {
                         openBraces++;
-                        inObject = true;
                         expectColon = false;
                     }
                 }
                 case '}' -> {
                     if (!isQuoted) {
                         openBraces--;
-                        inObject = true;
                         expectColon = false;
                     }
-                    if (openBraces <= 0 && i != charJSON.length - 1) {
+                    if (openBraces < 0 || (openBraces == 0 && i != charJSON.length - 1)) {
                         System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
                         return;
                     }
@@ -72,25 +69,26 @@ public class ValidationCommand implements Command {
                         openBrackets--;
                         expectColon = false;
                     }
-                    if (openBrackets < 0 ) {
+                    if (openBrackets < 0) {
                         System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
                         return;
                     }
                 }
                 case '"' -> isQuoted = !isQuoted;
                 case ':' -> {
-                    if(expectColon && !isQuoted) expectColon = false;
-                    else if(inObject && !isQuoted) {
+                    if(expectColon && !isQuoted) {
+                        expectColon = false;
+                    } else if(!isQuoted) {
                         System.out.printf("Error: Unexpected '%s' at line: %d\n", ch, line);
                         return;
                     }
                 }
                 case ',' -> {
-                    if (inObject && !isQuoted) expectColon = false;
+                    if (!isQuoted) expectColon = false;
                 }
             }
 
-            if (!isQuoted && inObject && ch == '"' && !expectColon) {
+            if (!isQuoted && ch == '"' && openBraces > 0) {
                 expectColon = true;
             }
         }

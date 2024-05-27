@@ -27,13 +27,11 @@ public class CreateCommand implements Command {
             return;
         }
 
-        //Checking if a file is opened
         if (fileManager.getPath() == null) {
             System.out.println("Error: No file opened");
             return;
         }
 
-        //Checking if the file is validated
         if (!fileManager.isValid()) {
             System.out.println("Error: File is not validated");
             return;
