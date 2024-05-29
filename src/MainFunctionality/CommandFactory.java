@@ -2,6 +2,7 @@ package MainFunctionality;
 
 import Commands.*;
 import Interfaces.Command;
+import Interfaces.CommandType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,22 +19,22 @@ public abstract class CommandFactory {
     /**
      * A map storing all the command names along with their respective command object instances.
      */
-    private static final Map<String, Command> commandMap = new HashMap<>();
+    private static final Map<CommandType, Command> commandMap = new HashMap<>();
 
     static {
-        commandMap.put("open", new OpenCommand());
-        commandMap.put("exit", new ExitCommand());
-        commandMap.put("help", new HelpCommand());
-        commandMap.put("save", new SaveCommand());
-        commandMap.put("saveas", new SaveAsCommand());
-        commandMap.put("close", new CloseCommand());
-        commandMap.put("validate", new ValidationCommand());
-        commandMap.put("print", new PrintCommand());
-        commandMap.put("delete", new DeleteCommand());
-        commandMap.put("search", new SearchCommand());
-        commandMap.put("set", new SetCommand());
-        commandMap.put("move", new MoveCommand());
-        commandMap.put("create", new CreateCommand());
+        commandMap.put(CommandType.OPEN, new OpenCommand());
+        commandMap.put(CommandType.EXIT, new ExitCommand());
+        commandMap.put(CommandType.HELP, new HelpCommand());
+        commandMap.put(CommandType.SAVE, new SaveCommand());
+        commandMap.put(CommandType.SAVEAS, new SaveAsCommand());
+        commandMap.put(CommandType.CLOSE, new CloseCommand());
+        commandMap.put(CommandType.VALIDATE, new ValidationCommand());
+        commandMap.put(CommandType.PRINT, new PrintCommand());
+        commandMap.put(CommandType.DELETE, new DeleteCommand());
+        commandMap.put(CommandType.SEARCH, new SearchCommand());
+        commandMap.put(CommandType.SET, new SetCommand());
+        commandMap.put(CommandType.MOVE, new MoveCommand());
+        commandMap.put(CommandType.CREATE, new CreateCommand());
     }
 
     /**
@@ -50,12 +51,15 @@ public abstract class CommandFactory {
 
         List<String> args = commandParts.size() > 1 ? new ArrayList<>(commandParts.subList(1, commandParts.size())) : new ArrayList<>();
 
-        Command command = commandMap.get(commandName.toLowerCase());
-        if (command != null) {
-            command.execute(args);
+        CommandType commandType;
+        try {
+            commandType = CommandType.valueOf(commandName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.out.printf("Error: Unknown command \"%s\"%n", commandName);
+            return;
         }
-        else {
-            System.out.printf("Error: Unknown command \"%s\"", commandName);
-        }
+
+        Command command = commandMap.get(commandType);
+        command.execute(args);
     }
 }
