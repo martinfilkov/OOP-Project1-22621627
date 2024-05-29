@@ -57,21 +57,4 @@ public class SetCommand implements Command {
         fileManager.setContent(content);
         System.out.println("Key " + key + " updated successfully.");
     }
-
-    private int findValueEnd(String content, int start) {
-        while (Character.isWhitespace(content.charAt(start))) {
-            start++;
-        }
-
-        char firstChar = content.charAt(start);
-        if (firstChar == '[' || firstChar == '{') {
-            return content.indexOf(firstChar == '[' ? ']' : '}', start) + 1;
-        }
-        else if (firstChar == '\"') {
-            return content.indexOf("\"", start + 1) + 1;
-        } else {
-            int end = content.indexOf(",", start);
-            return end == -1 ? content.indexOf("}", start) : end;
-        }
-    }
 }
