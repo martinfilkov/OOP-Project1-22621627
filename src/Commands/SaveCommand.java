@@ -1,6 +1,7 @@
 package Commands;
 
 import Interfaces.Command;
+import JsonStructure.JsonObject;
 import Manager.FileManager;
 
 import java.io.IOException;
@@ -22,18 +23,22 @@ public class SaveCommand implements Command {
      */
     @Override
     public void execute(List<String> args) throws IOException {
-        if (FileManager.getInstance().getPath() == null) {
+        FileManager fileManager = FileManager.getInstance();
+
+        if (fileManager.getPath() == null) {
             System.out.println("Error: No file opened to save");
             return;
         }
 
-        String content = FileManager.getInstance().getContent();
-        Path path = FileManager.getInstance().getPath();
+        JsonObject content = fileManager.getContent();
+        Path path = fileManager.getPath();
 
         if (Files.exists(path)) {
-            Files.write(path, content.getBytes());
-            System.out.printf("Successfully saved to %s", path);
+            String contentString = content.toString();
+            Files.writeString(path, contentString);
+            System.out.printf("Successfully saved to %s%n", path);
+        } else {
+            System.out.println("Error: The file path you provided is invalid");
         }
-        else System.out.println("Error: The file path you provided is invalid");
     }
 }

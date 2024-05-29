@@ -1,6 +1,7 @@
 package Commands;
 
 import Interfaces.Command;
+import JsonStructure.JsonObject;
 import Manager.FileManager;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class SaveAsCommand implements Command {
         }
 
         Path newPath = Paths.get(args.get(0)).toAbsolutePath();
-        String content = FileManager.getInstance().getContent();
+        JsonObject content = FileManager.getInstance().getContent();
 
         try {
             if (!newPath.toString().endsWith(".json")) {
@@ -46,10 +47,9 @@ public class SaveAsCommand implements Command {
             if (!Files.exists(newPath.getParent())) {
                 Files.createDirectories(newPath.getParent());
             }
-
-            Files.write(newPath, content.getBytes());
+            Files.writeString(newPath, content.toString());
             FileManager.getInstance().setPath(newPath);
-            System.out.printf("Successfully saved to %s\n", newPath);
+            System.out.printf("Successfully saved to %s%n", newPath);
         } catch (AccessDeniedException e) {
             System.out.printf("Error: An error occurred while saving the file: %s\n", e.getMessage());
         }

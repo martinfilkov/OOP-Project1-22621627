@@ -1,12 +1,15 @@
 package Commands;
 
 import Interfaces.Command;
+import JsonStructure.JsonObject;
 import Manager.FileManager;
+import JsonStructure.JsonParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -37,25 +40,24 @@ public class OpenCommand  implements Command {
         }
 
         Path path = Paths.get(filepath);
-        if(Files.exists(path)){
-            FileManager.getInstance().setPath(path);
-            FileManager.getInstance().setContent(new String(Files.readAllBytes(path)));
-            FileManager.getInstance().setValid(false);
-            System.out.printf("Successfully opened %s\n", filepath);
-        }
-        else {
-            try {
-                if (path.getParent() != null) {
-                    Files.createDirectories(path.getParent());
-                }
-                Files.write(path, "{}".getBytes());
-                FileManager.getInstance().setPath(path);
-                FileManager.getInstance().setContent("{}");
-                FileManager.getInstance().setValid(true);
-                System.out.printf("File not found. A new JSON file has been created at %s\n", filepath);
-            } catch (IOException e) {
-                System.out.println("Error creating the file: " + e.getMessage());
+        try {
+            FileManager fileManager = FileManager.getInstance();
+
+            if (Files.notExists(path)) {
+                Files.writeString(path, "{}", StandardOpenOption.CREATE_NEW);
+                System.out.println("File does not exist. Created new file with basic JSON structure.");
             }
+
+            String content = Files.readString(path);
+            JsonObject jsonObject = JsonParser.parseJson(content);
+            fileManager.setPath(path);
+            fileManager.setContent(jsonObject);
+            fileManager.setValid(false);
+            System.out.println("File opened successfully.");
+        } catch (IOException e) {
+            System.out.println("Error: Unable to read or create file.");
+        } catch (Exception e) {
+            System.out.println("Error: Invalid JSON content.");
         }
     }
 }

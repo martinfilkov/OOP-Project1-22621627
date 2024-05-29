@@ -1,6 +1,7 @@
 package Commands;
 
 import Interfaces.Command;
+import JsonStructure.JsonObject;
 import Manager.FileManager;
 
 import java.util.List;
@@ -40,12 +41,9 @@ public class SetCommand implements Command {
 
         String newValue = FileManager.parseValue(value);
 
-        String content = fileManager.getContent();
+        JsonObject content = fileManager.getContent();
 
-        String searchKey = "\"" + key + "\"";
-
-        int keyIndex = content.indexOf(searchKey);
-        if (keyIndex == -1) {
+        if (!content.containsKey(key)) {
             System.out.println("Error: Key not found");
             return;
         }
@@ -55,11 +53,8 @@ public class SetCommand implements Command {
             return;
         }
 
-        int valueStart = content.indexOf(":", keyIndex) + 1;
-        int valueEnd = findValueEnd(content, valueStart);
-
-        String updatedContent = content.substring(0, valueStart) + newValue + content.substring(valueEnd);
-        fileManager.setContent(updatedContent);
+        content.put(key, newValue);
+        fileManager.setContent(content);
         System.out.println("Key " + key + " updated successfully.");
     }
 

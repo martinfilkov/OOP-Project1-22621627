@@ -34,7 +34,7 @@ public class PrintCommand implements Command {
 
         boolean inQuote = false;
 
-        String content = FileManager.getInstance().getContent();
+        String content = FileManager.getInstance().getContent().toString();
 
         for (char c : content.toCharArray()) {
             switch (c) {

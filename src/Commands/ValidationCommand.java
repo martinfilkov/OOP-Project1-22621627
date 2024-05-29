@@ -20,7 +20,11 @@ public class ValidationCommand implements Command {
      */
     @Override
     public void execute(List<String> args) throws IOException {
-        String json = FileManager.getInstance().getContent();
+        if(FileManager.getInstance().getPath() == null){
+            System.out.println("Error: File not opened.");
+            return;
+        }
+        String json = FileManager.getInstance().getContent().toString();
 
         if (json == null || json.isEmpty()){
             System.out.println("Error: No file loaded or file is empty.");

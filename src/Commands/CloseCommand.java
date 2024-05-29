@@ -22,7 +22,7 @@ public class CloseCommand implements Command {
             System.out.println("Error: No file opened to close");
             return;
         }
-        FileManager.getInstance().setContent("");
+        FileManager.getInstance().setContent(null);
         FileManager.getInstance().setPath(null);
         FileManager.getInstance().setValid(false);
         System.out.println("Successfully closed file");

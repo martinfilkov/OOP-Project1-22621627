@@ -1,5 +1,7 @@
 package Manager;
 
+import JsonStructure.JsonObject;
+
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -10,7 +12,7 @@ import java.util.Scanner;
 public class FileManager {
     private static FileManager instance;
     private Path path;
-    private String content;
+    private JsonObject content;
     private boolean isValid = false;
 
     /**
@@ -54,7 +56,7 @@ public class FileManager {
      *
      * @return the content of the file as a string.
      */
-    public String getContent() {
+    public JsonObject getContent() {
         return content;
     }
 
@@ -63,7 +65,7 @@ public class FileManager {
      *
      * @param content the new content to set in the file.
      */
-    public void setContent(String content) {
+    public void setContent(JsonObject content) {
         this.content = content;
     }
 

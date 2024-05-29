@@ -1,6 +1,7 @@
 package Commands;
 
 import Interfaces.Command;
+import JsonStructure.JsonObject;
 import Manager.FileManager;
 
 import java.util.List;
@@ -23,51 +24,27 @@ public class SearchCommand implements Command {
             return;
         }
 
-        if(FileManager.getInstance().getPath() == null){
+        FileManager fileManager = FileManager.getInstance();
+
+        if (fileManager.getPath() == null) {
             System.out.println("Error: No file opened");
             return;
         }
 
-        if(!FileManager.getInstance().isValid()){
+        if (!fileManager.isValid()) {
             System.out.println("Error: File must be validated to perform a search");
             return;
         }
 
-        String content = FileManager.getInstance().getContent();
-        String searchKey = "\"" + args.get(0) + "\"";
+        JsonObject content = fileManager.getContent();
+        String searchKey = args.get(0);
 
-        if (content == null || content.isEmpty()) {
-            System.out.println("Error: No file loaded or file is empty");
-            return;
-        }
-
-        int keyIndex = content.indexOf(searchKey);
-        if (keyIndex == -1) {
+        if (!content.containsKey(searchKey)) {
             System.out.println("Error: Key not found");
             return;
         }
 
-        int valueStart = content.indexOf(":", keyIndex) + 1;
-        int valueEnd;
-        String value;
-
-        while (Character.isWhitespace(content.charAt(valueStart))) {
-            valueStart++;
-        }
-
-        if (content.charAt(valueStart) == '[') {
-            valueEnd = content.indexOf("]", valueStart) + 1;
-        }
-        else if(content.charAt(valueStart) == '{') {
-            valueEnd = content.indexOf("}", valueStart) + 1;
-        }
-        else {
-            valueEnd = content.indexOf(",", valueStart);
-            valueEnd = valueEnd != -1 ? valueEnd : content.indexOf("}", valueStart);
-        }
-
-        value = content.substring(valueStart, valueEnd).trim();
-
+        Object value = content.get(searchKey);
         System.out.println(searchKey + ": " + value);
     }
 }
